@@ -1,195 +1,73 @@
+Exact. Le README doit présenter **ITCore comme un outil destiné à une vraie infrastructure d'entreprise**, sans parler de simulation, de vendors non supportés ou de fonctionnalités fictives. La partie développement peut simplement indiquer que le projet est développé et validé dans un environnement contrôlé.
+
+Voici la version corrigée.
+
 # ITCore
 
 ### IT Infrastructure Operations & Diagnostics Platform
 
-ITCore is a local-first platform designed to centralize **IT support, systems administration, network operations, infrastructure diagnostics, incident management, monitoring, alerting and operational reporting** from a single interface.
+ITCore is a local-first platform designed for **enterprise IT infrastructure operations, diagnostics, monitoring, incident management, alerting, and reporting**.
 
-The project is built around a simple operational workflow:
+It provides infrastructure engineers, system administrators, network engineers, and IT support teams with a centralized operational interface for investigating and managing infrastructure events.
+
+The operational workflow is:
 
 > **Observe → Correlate → Diagnose → Report → Escalate**
-
-ITCore is designed to simulate and operate against a realistic enterprise infrastructure, providing a practical environment for developing and testing IT infrastructure operations capabilities.
 
 ---
 
 ## Overview
 
-ITCore brings together multiple infrastructure operations domains:
+ITCore is designed to operate across enterprise infrastructure environments containing:
 
-* Systems
-* Users
-* Networks
-* Infrastructure
+* Windows servers
+* Linux servers
+* Workstations
 * Active Directory
-* Services
-* Incidents
-* Alerts
-* Escalation
-* Monitoring
-* Reports
+* DNS
+* DHCP
+* File services
+* Application services
+* Database services
+* Network infrastructure
+* Users and sessions
+* Enterprise services
+* Infrastructure dependencies
 
-The initial implementation is intentionally built around a single Python script:
+The initial implementation is built around a single Python script:
 
 ```text
 ITCore.py
 ```
 
-The script acts as the main operational interface and progressively gains capabilities as the simulated infrastructure becomes more complex.
+The script provides the main operational interface and contains the infrastructure discovery, diagnostic, monitoring, incident, alerting, and reporting logic.
 
 ---
 
-# Enterprise Infrastructure Simulation
+# Infrastructure Operations
 
-Before connecting ITCore to a real production environment, the project uses a **simulated enterprise infrastructure**.
+ITCore provides a centralized operational view of the infrastructure.
 
-The objective is to reproduce the types of systems, users, network segments, services and incidents that an infrastructure engineer would encounter in a professional environment.
+The platform is designed to answer operational questions such as:
 
-Conceptually:
-
-```text
-                         ENTERPRISE
-                        INFRASTRUCTURE
-                              │
-             ┌────────────────┼────────────────┐
-             │                │                │
-          SERVERS         NETWORK           USERS
-             │                │                │
-      ┌──────┼──────┐    ┌────┼────┐      ┌───┼───┐
-      │      │      │    │    │    │      │   │   │
-     AD     DNS    APP   SW   FW   RTR   HR IT FIN
-      │             │
-      │          DATABASE
-      │
-   FILE SERVER
-```
-
-The simulated environment can contain:
-
-### Servers
-
-* Domain Controller
-* DNS Server
-* DHCP Server
-* File Server
-* Database Server
-* Application Server
-* Web Server
-* Monitoring Server
-* Linux infrastructure servers
-* Windows infrastructure servers
-
-### Network
-
-* Core router
-* Layer 3 switches
-* Access switches
-* Firewalls
-* VLANs
-* Trunks
-* Routing
-* DHCP
-* DNS
-* NAT
-* ACLs
-* VPN
-* Network segments
-
-### Users
-
-Users can be organized according to realistic enterprise departments:
-
-```text
-Management
-Finance
-Human Resources
-IT
-Sales
-Operations
-Support
-Security
-```
-
-Each user can have attributes such as:
-
-* Username
-* Department
-* Role
-* System
-* Session
-* Login time
-* Session state
-* Privilege level
+* Which systems are currently available?
+* Which systems are unreachable?
+* Which services are running?
+* Which services have failed?
+* Which users are connected?
+* Which privileged accounts are active?
+* Is the problem related to the network?
+* Is the server reachable?
+* Is the application service available?
+* Which users are affected?
+* Which incidents are currently active?
+* Who needs to be notified?
 
 ---
 
-# ITCore Architecture
+# Systems
 
-ITCore sits above the simulated infrastructure as the operational layer.
-
-```text
-                         ENTERPRISE INFRASTRUCTURE
-                                  │
-          ┌───────────────────────┼───────────────────────┐
-          │                       │                       │
-       SYSTEMS                  USERS                  NETWORK
-          │                       │                       │
-          └───────────────────────┼───────────────────────┘
-                                  │
-                             OBSERVATION
-                                  │
-                             CORRELATION
-                                  │
-                              DIAGNOSIS
-                                  │
-                              INCIDENT
-                                  │
-                     ┌────────────┴────────────┐
-                     │                         │
-                   REPORT                    ALERT
-                                               │
-                                          ESCALATION
-                                               │
-                                           TELEGRAM
-```
-
-ITCore does not simply execute isolated commands.
-
-The objective is to correlate information from different infrastructure layers.
-
-For example:
-
-```text
-User reports application unavailable
-                │
-                ▼
-          Check network
-                │
-                ▼
-          Network OK
-                │
-                ▼
-        Check application server
-                │
-                ▼
-        Server reachable
-                │
-                ▼
-       Application service DOWN
-                │
-                ▼
-          Create incident
-                │
-                ▼
-          Send escalation
-```
-
----
-
-# Main Operational Domains
-
-## 1. Systems
-
-ITCore provides visibility into Windows and Linux systems.
+ITCore provides system-level diagnostics and operational information.
 
 Capabilities include:
 
@@ -197,11 +75,11 @@ Capabilities include:
 * Systems inventory
 * System status
 * System information
-* CPU
-* Memory
+* CPU utilization
+* Memory utilization
 * Storage
 * Filesystems
-* Processes
+* Running processes
 * Services
 * Listening ports
 * Network connections
@@ -214,14 +92,17 @@ Capabilities include:
 * System logs
 * Full system diagnostics
 
+The objective is to provide infrastructure engineers with a consolidated view of system state instead of requiring individual tools for every diagnostic step.
+
 ---
 
-## 2. Users
+# Users
 
-The user management layer provides visibility into accounts and sessions.
+ITCore provides operational visibility into users and sessions.
 
 Capabilities include:
 
+* Users overview
 * All users
 * Connected users
 * Logged-off users
@@ -236,7 +117,7 @@ Capabilities include:
 * Failed logins
 * User diagnostics
 
-ITCore distinguishes between:
+User states are represented explicitly:
 
 ```text
 ACTIVE
@@ -249,20 +130,20 @@ UNKNOWN
 
 An unreachable system is not automatically considered logged off.
 
-Historical session information can be collected through continuous monitoring and state tracking.
+Where the operating system exposes the required information, login and session timestamps can be recorded with second-level precision.
 
 ---
 
-# 3. Network
+# Network Operations
 
-The network domain provides tools for infrastructure and connectivity diagnostics.
+ITCore provides network diagnostics for infrastructure operations and troubleshooting.
 
 Capabilities include:
 
 * Network overview
 * Network discovery
 * Network devices
-* Interfaces
+* Network interfaces
 * IP configuration
 * Routing table
 * ARP table
@@ -271,56 +152,152 @@ Capabilities include:
 * Gateway diagnostics
 * Ping
 * Traceroute
-* TCP/UDP tests
+* TCP/UDP connectivity tests
 * Ports and sockets
 * Network connections
-* VLANs
-* Trunks
-* STP
-* LACP
-* Firewall / ACL
-* VPN / IPsec
+* VLAN information
 * Network health
 * Network diagnostics
 
-The simulated infrastructure can reproduce common enterprise networking concepts:
+The diagnostic workflow can correlate multiple network observations.
+
+For example:
 
 ```text
-VLAN
-TRUNK
-STP
-LACP
-ARP
-DHCP
+Interface
+    ↓
+IP configuration
+    ↓
+Gateway
+    ↓
 DNS
-NAT
-ROUTING
-OSPF
-BGP
-ACL
-VPN / IPsec
-FIREWALL
-QoS
-WIRELESS
-802.1X
+    ↓
+Remote connectivity
+    ↓
+Application connectivity
 ```
 
-The architecture is designed to eventually accommodate environments using:
-
-* Cisco
-* FortiGate
-* Huawei
-* MikroTik
-* Juniper
-* Aruba
-* Ubiquiti
-* VyOS
+This allows ITCore to identify the infrastructure layer where a failure is occurring.
 
 ---
 
-# 4. Incidents
+# Infrastructure
 
-ITCore provides a complete operational incident layer.
+ITCore provides a global infrastructure view.
+
+The infrastructure layer can aggregate information such as:
+
+```text
+Total Systems
+Windows Servers
+Linux Servers
+Workstations
+Network Infrastructure
+
+ONLINE
+UNREACHABLE
+OFFLINE
+
+HEALTHY
+WARNING
+CRITICAL
+
+Active Sessions
+Idle Sessions
+Disconnected Sessions
+
+Active Incidents
+```
+
+ITCore distinguishes between:
+
+```text
+ONLINE
+UNREACHABLE
+OFFLINE
+```
+
+Network unreachability alone is not treated as definitive proof that a system is powered off.
+
+Historical monitoring and `last seen` information can improve infrastructure-state determination.
+
+---
+
+# Active Directory
+
+ITCore provides operational visibility for Active Directory environments.
+
+The platform is designed to monitor and diagnose areas such as:
+
+* Domain controllers
+* Domain availability
+* Domain users
+* Privileged accounts
+* User sessions
+* Authentication events
+* Failed logins
+* Directory-related services
+* Infrastructure health
+
+Active Directory events can also participate in the incident and alerting workflow.
+
+---
+
+# Diagnostic Engine
+
+ITCore uses deterministic diagnostics to correlate infrastructure observations.
+
+The objective is not simply to report that a command failed, but to determine the relevant infrastructure layer.
+
+Example:
+
+```text
+Interface DOWN
+      ↓
+Interface problem
+```
+
+```text
+Interface UP
+      ↓
+No IP address
+      ↓
+IP / DHCP problem
+```
+
+```text
+IP available
+      ↓
+Gateway unreachable
+      ↓
+Network / gateway problem
+```
+
+```text
+Gateway reachable
+      ↓
+DNS resolution fails
+      ↓
+DNS problem
+```
+
+```text
+Network OK
+      ↓
+Server reachable
+      ↓
+Application service DOWN
+      ↓
+Service / application incident
+```
+
+This correlation provides the infrastructure engineer with operational context for troubleshooting.
+
+---
+
+# Incident Management
+
+ITCore provides an incident-management layer for infrastructure events.
 
 Capabilities include:
 
@@ -361,11 +338,27 @@ Affected Users: 23
 Affected Apps:  4
 ```
 
+An incident can therefore combine:
+
+```text
+Infrastructure
+      +
+System
+      +
+Network
+      +
+Service
+      +
+Users
+      ↓
+Incident
+```
+
 ---
 
-# 5. Alerts & Escalation
+# Alerts & Escalation
 
-ITCore can generate operational alerts from infrastructure events.
+ITCore provides an alerting and escalation layer for infrastructure events.
 
 Capabilities include:
 
@@ -410,7 +403,7 @@ Detected: 12:43:17
 Severity: CRITICAL
 ```
 
-Recovery notifications can provide the final state:
+Recovery events can generate a corresponding notification:
 
 ```text
 ✅ INCIDENT RESOLVED
@@ -432,137 +425,9 @@ Status: RESOLVED
 
 ---
 
-# 6. Infrastructure
-
-The infrastructure domain provides a global operational view.
-
-Capabilities include:
-
-* Infrastructure overview
-* Infrastructure discovery
-* All systems
-* Windows infrastructure
-* Linux infrastructure
-* Network infrastructure
-* Active Directory infrastructure
-* Infrastructure health
-* Infrastructure map
-* Infrastructure statistics
-
-The overview can aggregate:
-
-```text
-Total Systems
-Windows Servers
-Linux Servers
-Network Devices
-Workstations
-
-ONLINE
-UNREACHABLE
-OFFLINE
-
-HEALTHY
-WARNING
-CRITICAL
-
-Active Sessions
-Idle Sessions
-Disconnected Sessions
-
-Active Incidents
-```
-
-ITCore distinguishes between **unreachable** and **confirmed offline** states.
-
-A failed network connection alone should not be interpreted as proof that a machine is powered off.
-
----
-
-# 7. Reports
-
-ITCore provides operational reporting capabilities.
-
-Reports can cover:
-
-* Infrastructure
-* Systems
-* Users
-* Network
-* Incidents
-* Security / administrators
-* Infrastructure health
-* Exportable operational data
-
-The objective is to provide a consolidated operational picture for troubleshooting and infrastructure follow-up.
-
----
-
-# Diagnostic Engine
-
-The diagnostic engine uses deterministic rules and infrastructure observations.
-
-The objective is to identify the infrastructure layer associated with a failure.
-
-Example:
-
-```text
-INTERFACE DOWN
-      │
-      ▼
-INTERFACE PROBLEM
-```
-
-```text
-INTERFACE UP
-      │
-      ▼
-NO IP ADDRESS
-      │
-      ▼
-IP / DHCP PROBLEM
-```
-
-```text
-IP AVAILABLE
-      │
-      ▼
-GATEWAY UNREACHABLE
-      │
-      ▼
-LAN / GATEWAY PROBLEM
-```
-
-```text
-GATEWAY REACHABLE
-      │
-      ▼
-DNS FAILURE
-      │
-      ▼
-DNS PROBLEM
-```
-
-```text
-NETWORK OK
-      │
-      ▼
-SERVER REACHABLE
-      │
-      ▼
-APPLICATION SERVICE DOWN
-      │
-      ▼
-APPLICATION / SERVICE INCIDENT
-```
-
-The goal is to provide evidence-based diagnostics rather than simply reporting that a command failed.
-
----
-
 # Monitoring
 
-ITCore can operate continuously and maintain infrastructure state over time.
+ITCore can operate continuously to detect infrastructure state changes.
 
 Start monitoring with:
 
@@ -576,10 +441,9 @@ On Linux:
 sudo python3 ITCore.py --monitor
 ```
 
-Monitoring can detect:
+Monitoring can detect events such as:
 
-* Systems appearing
-* Systems becoming unreachable
+* Systems becoming unavailable
 * Systems recovering
 * User logins
 * User logouts
@@ -592,13 +456,32 @@ Monitoring can detect:
 * Active Directory events
 * Incident recovery
 
-Continuous monitoring also makes it possible to build historical state information.
+Continuous monitoring also enables historical state tracking.
+
+---
+
+# Reports
+
+ITCore provides operational reporting capabilities.
+
+Reports can cover:
+
+* Infrastructure
+* Systems
+* Users
+* Network
+* Incidents
+* Security / administrators
+* Infrastructure health
+* Exportable operational information
+
+Reports provide a consolidated view of the environment for troubleshooting, operational follow-up, and documentation.
 
 ---
 
 # Security Model
 
-ITCore is designed to operate with administrative privileges where required.
+ITCore is designed to operate with administrative privileges where required by the operating system.
 
 ### Windows
 
@@ -616,9 +499,9 @@ Run with sudo when required:
 sudo python3 ITCore.py
 ```
 
-The initial platform prioritizes **read-only diagnostics**.
+The initial operational model prioritizes **read-only diagnostics and observation**.
 
-Potential administrative actions are treated separately:
+Administrative actions are treated separately and should require explicit confirmation.
 
 ```text
 ADMIN PRIVILEGES
@@ -636,16 +519,16 @@ EXPLICIT CONFIRMATION
 AUDIT
 ```
 
-Future actions could include:
+Potential administrative actions include:
 
 * Restarting services
 * Stopping processes
 * Disabling accounts
 * Modifying network configuration
-* Modifying firewall rules
+* Modifying firewall configuration
 * Changing system configuration
 
-These operations should require explicit confirmation.
+These operations should never be executed silently.
 
 ---
 
@@ -657,7 +540,7 @@ The main application is:
 ITCore.py
 ```
 
-Run:
+Run the platform with:
 
 ```bash
 python3 ITCore.py
@@ -713,13 +596,13 @@ Linux:
 sudo python3 ITCore.py --monitor
 ```
 
-The monitoring mode observes the configured infrastructure and records state changes.
+The monitoring process observes infrastructure state and records relevant state transitions.
 
 ---
 
 # Screenshots
 
-The following screenshots illustrate the main operational interfaces of the platform.
+The following screenshots illustrate the main operational interfaces of ITCore.
 
 ### Main Menu
 
@@ -773,7 +656,7 @@ The following screenshots illustrate the main operational interfaces of the plat
 
 # Project Structure
 
-The initial repository intentionally remains simple:
+The initial repository is intentionally simple:
 
 ```text
 ITCore/
@@ -794,72 +677,84 @@ ITCore/
         └── reports.png
 ```
 
-The entire initial application is contained in:
+The initial application is entirely contained in:
 
 ```text
 ITCore.py
 ```
 
-The script remains internally organized into functional components so that it can later evolve into a larger architecture if required.
+The script is internally organized into functional components while remaining deployable as a single file.
 
 ---
 
-# Development Roadmap
+# Development Approach
 
-## 1. Enterprise Infrastructure Design
+ITCore is developed around a real-world enterprise infrastructure model.
 
-Design and simulate a realistic enterprise infrastructure with:
+Development and validation are performed in a controlled environment before deployment against production infrastructure.
 
-* Windows and Linux servers
-* Workstations
-* Active Directory
-* DNS / DHCP
-* Network devices
-* VLANs
-* Routing
-* Firewalls
-* Users and departments
-* Enterprise services
-* Infrastructure dependencies
-* Failure scenarios
+The development process follows three main stages.
 
-## 2. ITCore.py Development
+### Enterprise Infrastructure Design
 
-Develop the initial ITCore platform around the simulated infrastructure.
+Define the infrastructure architecture, systems, users, services, network topology, dependencies, and operational scenarios.
 
-The script progressively implements:
+### ITCore.py Development
 
-* Systems
-* Users
-* Network
-* Infrastructure
-* Diagnostics
-* Incidents
-* Alerts & escalation
-* Reports
-* Monitoring
+Implement the operational capabilities required to observe, diagnose, monitor, report, and manage infrastructure events.
 
-## 3. ITCore.py Improvement
+### ITCore.py Improvement
 
-Continuously improve the platform by testing it against increasingly realistic infrastructure scenarios.
+Continuously improve the platform based on infrastructure scenarios, diagnostic requirements, monitoring results, and operational use cases.
 
-Improvements will focus on:
+---
 
-* Diagnostic accuracy
-* Infrastructure correlation
-* Monitoring
-* Incident detection
-* Historical state tracking
-* Network diagnostics
-* Reporting
-* Telegram escalation
-* Additional infrastructure integrations
+# Operational Workflow
+
+ITCore follows a centralized infrastructure-operations workflow:
+
+```text
+                    INFRASTRUCTURE
+                          │
+          ┌───────────────┼───────────────┐
+          │               │               │
+       SYSTEMS          USERS           NETWORK
+          │               │               │
+          └───────────────┼───────────────┘
+                          │
+                     OBSERVATION
+                          │
+                      CORRELATION
+                          │
+                       DIAGNOSIS
+                          │
+                       INCIDENT
+                          │
+                ┌─────────┴─────────┐
+                │                   │
+              REPORT              ALERT
+                                    │
+                               ESCALATION
+                                    │
+                                TELEGRAM
+```
+
+The objective is to give infrastructure teams the operational context required to understand:
+
+* What is happening?
+* Where is the problem?
+* Which systems are affected?
+* Which users are affected?
+* Which infrastructure layer is failing?
+* How severe is the event?
+* What evidence supports the diagnosis?
+* Who should be notified?
 
 ---
 
 # Project Vision
 
-ITCore aims to become a practical **IT Infrastructure Operations platform** capable of bringing together the daily activities of:
+ITCore aims to provide a practical operational platform for:
 
 * Helpdesk engineers
 * System administrators
@@ -868,35 +763,16 @@ ITCore aims to become a practical **IT Infrastructure Operations platform** capa
 * IT operations teams
 * Incident responders
 
-The project starts with a controlled enterprise simulation and progressively evolves toward a platform capable of interacting with real infrastructure.
+The platform brings together systems, users, networks, services, incidents, monitoring, alerts, and reporting into a single operational workflow.
 
-The objective is not simply to execute administrative commands, but to build an operational layer capable of understanding the relationship between:
-
-```text
-Systems
-   +
-Users
-   +
-Network
-   +
-Services
-   +
-Infrastructure
-   ↓
-Operational Context
-   ↓
-Diagnosis
-   ↓
-Incident
-   ↓
-Alert / Escalation
-```
+The long-term objective is to provide an infrastructure operations layer capable of **observing the environment, correlating events, identifying failures, documenting incidents, and escalating critical events** while keeping administrative actions controlled and auditable.
 
 ---
 
 # Author
 
-*r06u3**
+**r06u3**
+
 
 ---
 
