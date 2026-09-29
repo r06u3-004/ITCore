@@ -1,12 +1,8 @@
-Exact. Le README doit présenter **ITCore comme un outil destiné à une vraie infrastructure d'entreprise**, sans parler de simulation, de vendors non supportés ou de fonctionnalités fictives. La partie développement peut simplement indiquer que le projet est développé et validé dans un environnement contrôlé.
-
-Voici la version corrigée.
-
 # ITCore
 
 ### IT Infrastructure Operations & Diagnostics Platform
 
-ITCore is a local-first platform designed for **enterprise IT infrastructure operations, diagnostics, monitoring, incident management, alerting, and reporting**.
+ITCore is a local platform designed for **enterprise IT infrastructure operations, diagnostics, monitoring, incident management, alerting, and reporting**.
 
 It provides infrastructure engineers, system administrators, network engineers, and IT support teams with a centralized operational interface for investigating and managing infrastructure events.
 
