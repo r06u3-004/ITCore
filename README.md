@@ -896,11 +896,7 @@ Alert / Escalation
 
 # Author
 
-**Kodjo Rogue**
-
-Cybersecurity & IT Infrastructure
-
-Lomé, Togo
+*r06u3**
 
 ---
 
